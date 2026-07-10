@@ -1,9 +1,6 @@
 package model
 
-import (
-	"gorm.io/gorm"
-	"time"
-)
+import "time"
 
 type Book struct {
 	Id        int    `gorm:"column:id;primaryKey"`
@@ -16,9 +13,4 @@ type Book struct {
 
 func (Book) TableName() string {
 	return "books"
-}
-
-func (m *Book) BeforeCreate(tx *gorm.DB) {
-	// Видел как uuid заполняют, нужно ли такое делать для int
-	// ответ - не нужно
 }

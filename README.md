@@ -9,35 +9,49 @@
 - **GORM** — ORM
 - **SQLite** — база данных
 
+## Архитектура
+
+Проект построен по принципам **Clean Architecture**. Зависимости направлены строго внутрь — к домену.
+
+```
+adapter → domain ← usecase
+infrastructure → domain
+```
+
 ## Структура проекта
 
 ```
 simple_api/
 ├── cmd/
-│   └── main.go                  # Точка входа
+│   └── main.go                            # Точка входа
 ├── app/
-│   ├── app.go                   # Инициализация приложения и роутов
-│   ├── api/
-│   │   └── books/
-│   │       ├── handlers.go      # HTTP-обработчики
-│   │       ├── routers.go       # Регистрация роутов
-│   │       └── response.go      # Структуры ответов
-│   ├── dto/
-│   │   └── book.go              # DTO для запросов
-│   ├── service/
-│   │   └── books.go             # Бизнес-логика
-│   ├── repository/
-│   │   └── books.go             # Работа с БД
-│   ├── model/
-│   │   └── book.go              # GORM-модель
-│   ├── config/
-│   │   └── config.go            # Конфигурация
-│   └── util/
-│       └── validator/
-│           └── validator.go     # Валидация
-└── pkg/
-    └── database/
-        └── database.go          # Подключение к БД
+│   └── app.go                             # Инициализация и DI
+├── config/
+│   └── config.go                          # Конфигурация
+└── internal/
+    ├── domain/
+    │   ├── entity/
+    │   │   └── book.go                    # Доменная сущность (без GORM)
+    │   ├── repository/
+    │   │   └── book.go                    # Интерфейс репозитория
+    │   └── errors.go                      # Доменные ошибки
+    ├── usecase/
+    │   ├── book.go                        # Бизнес-логика
+    │   └── book_test.go
+    ├── adapter/
+    │   ├── repository/
+    │   │   └── book.go                    # Реализация репозитория (GORM → entity)
+    │   └── http/
+    │       ├── router.go                  # Регистрация роутов
+    │       ├── dto/
+    │       │   └── book.go                # DTO запросов и ответов
+    │       └── handler/
+    │           └── book.go                # HTTP-обработчики
+    └── infrastructure/
+        ├── model/
+        │   └── book.go                    # GORM-модель
+        └── database/
+            └── database.go                # Подключение к БД
 ```
 
 ## Запуск
@@ -45,8 +59,6 @@ simple_api/
 ```bash
 go run cmd/main.go
 ```
-
-Сервер запускается на порту `:3000`.
 
 ## Конфигурация
 
@@ -60,7 +72,7 @@ PORT=8000
 
 ## API
 
-Base URL: `http://localhost:3000/api/v1`
+Base URL: `http://localhost:8000/api/v1`
 
 ### Книги
 

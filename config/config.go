@@ -25,25 +25,17 @@ func (s *Setting) Addr() string {
 	return fmt.Sprintf("%s:%d", s.Host, s.Port)
 }
 
-var setting Setting
+var Cfg Setting
 
-func LoadSettings() Setting {
+func init() {
 	vars, err := godotenv.Read()
-
 	if err != nil {
 		panic(err)
 	}
 	port, _ := strconv.Atoi(vars["PORT"])
-
-	return Setting{
+	Cfg = Setting{
 		Version: vars["VERSION"],
 		Host:    vars["HOST"],
 		Port:    port,
 	}
-}
-
-var Cfg Setting
-
-func init() {
-	Cfg = LoadSettings()
 }

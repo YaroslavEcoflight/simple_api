@@ -1,12 +1,14 @@
 package app
 
 import (
-	"simple_api/app/api/books"
-	"simple_api/app/model"
-	"simple_api/pkg/database"
+	"simple_api/config"
+	httpadapter "simple_api/internal/adapter/http"
+	adapterrepo "simple_api/internal/adapter/repository"
+	"simple_api/internal/infrastructure/database"
+	"simple_api/internal/infrastructure/model"
+	"simple_api/internal/usecase"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 func Run() {
@@ -15,16 +17,13 @@ func Run() {
 		panic(err)
 	}
 	db.AutoMigrate(&model.Book{})
-	app := fiber.New(fiber.Config{})
-	api := app.Group("/api")
 
-	initAPIV1(api, db)
+	repo := adapterrepo.NewBookRepository(db)
+	uc := usecase.NewBook(repo)
 
-	app.Listen(":3000")
+	app := fiber.New()
+	api := app.Group("/api/v1")
+	httpadapter.RegisterRoutes(api, uc)
 
-}
-
-func initAPIV1(app fiber.Router, db *gorm.DB) {
-	v1 := app.Group("v1")
-	books.AddRouters(v1, db)
+	app.Listen(config.Cfg.Addr())
 }
