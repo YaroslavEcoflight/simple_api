@@ -34,13 +34,7 @@ func (h *Handler) GetById(c *fiber.Ctx) error {
 		}
 		return c.Status(500).JSON(fiber.Map{"error": "internal server error"})
 	}
-	response := Response{
-		Id:     res.Id,
-		Title:  res.Title,
-		Author: res.Author,
-		Rating: res.Rating,
-	}
-	return c.JSON(response)
+	return c.JSON(toResponse(res))
 }
 
 func (h *Handler) Update(c *fiber.Ctx) error {
@@ -60,13 +54,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		}
 		return c.Status(500).JSON(fiber.Map{"error": "iternal server error"})
 	}
-	response := Response{
-		Id:     res.Id,
-		Title:  res.Title,
-		Author: res.Author,
-		Rating: res.Rating,
-	}
-	return c.JSON(response)
+	return c.JSON(toResponse(res))
 
 }
 

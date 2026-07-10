@@ -9,7 +9,7 @@ import (
 )
 
 type Book interface {
-	GetBookById(id int) (dto.Book, error)
+	GetBookById(id int) (model.Book, error)
 	CreateBook(entity dto.BookCreateRequest) (model.Book, error)
 	UpdateBook(entity dto.BookUpdateRequest) (model.Book, error)
 	DeleteBook(id int) error
@@ -24,7 +24,7 @@ func NewBook(db *gorm.DB) *book {
 	return &book{repo: repo}
 }
 
-func (b *book) GetBookById(id int) (dto.Book, error) {
+func (b *book) GetBookById(id int) (model.Book, error) {
 	return b.repo.GetBookById(id)
 }
 
