@@ -15,8 +15,8 @@ import (
 
 type mockBookUseCase struct {
 	getByIdFn func(id int) (entity.Book, error)
-	createFn  func(title, author string, rating int) (entity.Book, error)
-	updateFn  func(id int, title, author string, rating int) (entity.Book, error)
+	createFn  func(book entity.Book) (entity.Book, error)
+	updateFn  func(id int, book entity.Book) (entity.Book, error)
 	deleteFn  func(id int) error
 }
 
@@ -27,18 +27,19 @@ func (m *mockBookUseCase) GetById(id int) (entity.Book, error) {
 	return entity.Book{Id: id, Title: "test"}, nil
 }
 
-func (m *mockBookUseCase) Create(title, author string, rating int) (entity.Book, error) {
+func (m *mockBookUseCase) Create(book entity.Book) (entity.Book, error) {
 	if m.createFn != nil {
-		return m.createFn(title, author, rating)
+		return m.createFn(book)
 	}
-	return entity.Book{Title: title, Author: author, Rating: rating}, nil
+	return book, nil
 }
 
-func (m *mockBookUseCase) Update(id int, title, author string, rating int) (entity.Book, error) {
+func (m *mockBookUseCase) Update(id int, book entity.Book) (entity.Book, error) {
 	if m.updateFn != nil {
-		return m.updateFn(id, title, author, rating)
+		return m.updateFn(id, book)
 	}
-	return entity.Book{Id: id, Title: title, Author: author, Rating: rating}, nil
+	book.Id = id
+	return book, nil
 }
 
 func (m *mockBookUseCase) Delete(id int) error {
@@ -114,7 +115,7 @@ func TestUpdate(t *testing.T) {
 
 func TestUpdate_NotFound(t *testing.T) {
 	app := newTestApp(&mockBookUseCase{
-		updateFn: func(id int, title, author string, rating int) (entity.Book, error) {
+		updateFn: func(id int, book entity.Book) (entity.Book, error) {
 			return entity.Book{}, domain.ErrNotFound
 		},
 	})

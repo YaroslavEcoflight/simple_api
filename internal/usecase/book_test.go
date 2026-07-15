@@ -64,7 +64,7 @@ func TestGetById_NotFound(t *testing.T) {
 
 func TestCreate(t *testing.T) {
 	uc := NewBook(&mockBookRepo{})
-	result, err := uc.Create("test", "test_author", 1)
+	result, err := uc.Create(entity.Book{Title: "test", Author: "test_author", Rating: 1})
 	assert.NoError(t, err)
 	assert.Equal(t, "test", result.Title)
 	assert.Equal(t, "test_author", result.Author)
@@ -72,7 +72,7 @@ func TestCreate(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	uc := NewBook(&mockBookRepo{})
-	result, err := uc.Update(1, "test", "test_author", 1)
+	result, err := uc.Update(1, entity.Book{Title: "test", Author: "test_author", Rating: 1})
 	assert.NoError(t, err)
 	assert.Equal(t, "test", result.Title)
 	assert.Equal(t, "test_author", result.Author)

@@ -7,8 +7,8 @@ import (
 
 type BookUseCase interface {
 	GetById(id int) (entity.Book, error)
-	Create(title, author string, rating int) (entity.Book, error)
-	Update(id int, title, author string, rating int) (entity.Book, error)
+	Create(book entity.Book) (entity.Book, error)
+	Update(id int, book entity.Book) (entity.Book, error)
 	Delete(id int) error
 }
 
@@ -24,12 +24,13 @@ func (uc *book) GetById(id int) (entity.Book, error) {
 	return uc.repo.GetById(id)
 }
 
-func (uc *book) Create(title, author string, rating int) (entity.Book, error) {
-	return uc.repo.Create(entity.Book{Title: title, Author: author, Rating: rating})
+func (uc *book) Create(book entity.Book) (entity.Book, error) {
+	return uc.repo.Create(book)
 }
 
-func (uc *book) Update(id int, title, author string, rating int) (entity.Book, error) {
-	return uc.repo.Update(entity.Book{Id: id, Title: title, Author: author, Rating: rating})
+func (uc *book) Update(id int, book entity.Book) (entity.Book, error) {
+	book.Id = id
+	return uc.repo.Update(book)
 }
 
 func (uc *book) Delete(id int) error {
