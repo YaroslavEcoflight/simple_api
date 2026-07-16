@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -28,14 +29,11 @@ func (s *Setting) Addr() string {
 var Cfg Setting
 
 func init() {
-	vars, err := godotenv.Read()
-	if err != nil {
-		panic(err)
-	}
-	port, _ := strconv.Atoi(vars["PORT"])
+	godotenv.Load()
+	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	Cfg = Setting{
-		Version: vars["VERSION"],
-		Host:    vars["HOST"],
+		Version: os.Getenv("VERSION"),
+		Host:    os.Getenv("HOST"),
 		Port:    port,
 	}
 }
