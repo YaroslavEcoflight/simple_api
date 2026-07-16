@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 
 	adapterrepo "simple_api/internal/adapter/repository"
+	"simple_api/internal/domain"
 	"simple_api/internal/domain/entity"
 	"simple_api/internal/infrastructure/model"
 )
@@ -24,7 +25,7 @@ func setupTestDB(t *testing.T) *gorm.DB {
 	return db
 }
 
-// Базовые интеграционные тесты, на отрицательные сценарии лень писать
+// Базовые интеграционные тесты
 func TestBookRepositoryCreate(t *testing.T) {
 	db := setupTestDB(t)
 	repo := adapterrepo.NewBookRepository(db)
@@ -95,4 +96,34 @@ func TestBookDelete(t *testing.T) {
 	err := repo.Delete(created.Id)
 
 	require.NoError(t, err)
+}
+
+func TestBookGetById_NotFound(t *testing.T) {
+	db := setupTestDB(t)
+	repo := adapterrepo.NewBookRepository(db)
+
+	_, err := repo.GetById(999)
+
+	assert.ErrorIs(t, err, domain.ErrNotFound)
+}
+
+func TestBookUpdate_NotFound(t *testing.T) {
+	db := setupTestDB(t)
+	repo := adapterrepo.NewBookRepository(db)
+
+	_, err := repo.Update(entity.Book{
+		Id:    999,
+		Title: "ghost",
+	})
+
+	assert.ErrorIs(t, err, domain.ErrNotFound)
+}
+
+func TestBookDelete_NotFound(t *testing.T) {
+	db := setupTestDB(t)
+	repo := adapterrepo.NewBookRepository(db)
+
+	err := repo.Delete(999)
+
+	assert.ErrorIs(t, err, domain.ErrNotFound)
 }
